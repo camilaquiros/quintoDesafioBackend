@@ -27,16 +27,16 @@ app.use(session({
     store: MongoStore.create({
         mongoUrl: process.env.MONGO_URL,
         mongoOptions: {usenewUrlParser: true, useUnifiedTopology: true},
-        ttl: 60 //tiempo en segundos (120 días = 10368000)
+        ttl: 120 //tiempo en segundos (120 días = 10368000)
     }),
     secret: process.env.SESSION_SECRET,
-    resave:true,
-    saveUninitialized:true
+    resave: true,
+    saveUninitialized: false
 }))
 
 function auth(req,res,next) {
     console.log(req.session.email)
-    if(req.session.email == 'adminCoder@coder.com' && req.session.password == 'adminCod3r123') {
+    if(req.session.email == process.env.ADMIN_EMAIL && req.session.password == process.env.ADMIN_PASSWORD) {
         return next() //continua con la ejecución normal de la ruta
     }
     return res.send('No tenes acceso a este contenido')
@@ -48,36 +48,28 @@ app.get('/admin', auth, (req,res) => {
 })
 
 app.post('/products', (req,res) => {
-
-     req.session.destroy(() => {
+        req.session.destroy()
         res.redirect(301, '/')
-    })
-    
 })
+
+
 //rutas
 app.use('/', sessionRouter)
-app.use('/register', userRouter)
+app.use('/user', userRouter)
 app.use(express.static(path.join(__dirname, '/public')))
 app.use('/products', productsRouter)
 app.use('/carts', cartRouter)
-app.use('/users', userRouter)
-/* app.get('/static', (req,res) => {
-    //indicar que plantilla utilizar
-    res.render("home", {
-        //variables
-        
-    })
-}) */
+
 
 //cookies
-app.get('/setCookie', (req, res) => {
+/* app.get('/setCookie', (req, res) => {
     res.cookie('CookieCoookie', 'Esto es el valor de una cookie', {maxAge:60000, signed: true}).send('Cookie creada') //cookie de un minuto firmada
 })
 
 app.get('/getCookie', (req, res) => {
     //res.send(req.cookies) consultar TODAS las cookies
     res.send(req.signedCookies)
-})
+}) */
 
 //server
 app.listen(PORT, () => {

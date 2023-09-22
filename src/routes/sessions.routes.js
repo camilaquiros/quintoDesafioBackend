@@ -6,15 +6,12 @@ const sessionRouter = Router();
 //session
 sessionRouter.get('/', (req,res) => {
     res.render('home')
-    const {email, password} = req.body
-        req.session.email = email
-        req.session.password = password
-/*         res.send("Usuario logueado") */
-/*         setTimeout(res.redirect('/api/products'), 3000) */
 })
 
 sessionRouter.post('/', async (req,res) => {
     const {email,password} = req.body
+    req.session.email = email
+    req.session.password = password 
     try {
         if(req.session.login)
 /*             res.status(200).send({resultado: 'Login ya existente'}) */
@@ -35,12 +32,12 @@ sessionRouter.post('/', async (req,res) => {
     }
 })
 
-sessionRouter.get('/logout', (req, res) => {
+/* sessionRouter.get('/logout', (req, res) => {
     if(req.session.login) {
         req.session.destroy()
     }
     res.status(200).send({resultado:'Login eliminado'})
-})
+}) */
 
 
 export default sessionRouter

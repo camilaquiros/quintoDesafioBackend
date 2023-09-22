@@ -6,8 +6,7 @@ const productRouter = Router();
 
 //GET
 productRouter.get('/', async(req, res) => {
-    const user = await userModel.findOne();
-    console.log(user)
+    const user = await userModel.findOne({email: req.session.email})
 
 /*     const {limit, page, sort, query} = req.query; */
     try {
@@ -25,7 +24,7 @@ productRouter.get('/', async(req, res) => {
             }))
         };
     
-        res.render('products', {products: array.products, first_name: user.first_name, last_name: user.last_name})
+        res.render('products', {products: array.products, first_name: user.first_name, last_name: user.last_name, rol: user.rol})
         
 /*         if(limit != undefined){
             const prods = await productModel.paginate({}, {limit, page, sort})
